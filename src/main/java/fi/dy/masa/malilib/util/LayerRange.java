@@ -752,8 +752,22 @@ public class LayerRange
     public void fromJson(JsonObject obj)
     {
         this.layerMode = LayerMode.fromStringStatic(JsonUtils.getString(obj, "mode"));
-        this.axis = Direction.Axis.fromName(JsonUtils.getString(obj, "axis"));
-        if (this.axis == null) { this.axis = Direction.Axis.Y; }
+        var axis = JsonUtils.getString(obj, "axis");
+        //Somehow Direction.Axis's name() returns in uppercase and fromName() uses lowercase...
+        if (axis == null)
+        {
+            this.axis = Direction.Axis.Y;
+        }
+        else
+        {
+            axis = axis.toLowerCase();
+            if (axis.equals("x"))
+                this.axis = Direction.Axis.X;
+            else if (axis.equals("z"))
+                this.axis = Direction.Axis.Z;
+            else
+                this.axis = Direction.Axis.Y;
+        }
 
         this.layerSingle = JsonUtils.getInteger(obj, "layer_single");
         this.layerAbove = JsonUtils.getInteger(obj, "layer_above");
